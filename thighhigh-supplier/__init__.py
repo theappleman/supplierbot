@@ -30,6 +30,7 @@ class Supplier(TextGeneratorBot):
             ApiHost("yande.re"),
             ApiHost("konachan.net"),
             ApiHost("hypnohub.net"),
+            ApiHost("danbooru.donmai.us", api_path="/posts.json", tags="tag_string", preview="file_url"),
         ]
 
         return case[_now().toordinal() % len(case)]
