@@ -1,6 +1,7 @@
 from botfriend.bot import TextGeneratorBot
 from botfriend.model import _now
 import requests
+from textblob import TextBlob
 
 
 class ApiHost(object):
@@ -54,7 +55,7 @@ class Supplier(TextGeneratorBot):
         posts = state['posts']
 
         recent_posts = [
-            recent.content
+            TextBlob(recent.content)
             for recent in self.model.recent_posts(365)
         ]
         # alnum + underscore
