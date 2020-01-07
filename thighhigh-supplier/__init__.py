@@ -57,6 +57,8 @@ class Supplier(TextGeneratorBot):
             recent.content
             for recent in self.model.recent_posts(365)
         ]
+        # alnum + underscore
+        tr = {x: None for x in list(range(ord('A'), ord('Z'))) + list(range(ord('a'), ord('z'))) + list(range(ord('0'), ord('9'))) + [ord('_')]}
 
         chosen = None
         for post in posts:
@@ -65,7 +67,7 @@ class Supplier(TextGeneratorBot):
             if post['rating'] != 's':
                 continue
 
-            tags = [f"#{tag}" for tag in post[state['tags']].split(" ")]
+            tags = [f"#{tag}" for tag in post[state['tags']].split(" ") if tag.translate(tr) == '']
             content = state['post'].format(
                             " ".join(tags),
                             post['id']
