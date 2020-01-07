@@ -11,10 +11,14 @@ class Supplier(TextGeneratorBot):
             "tags": "thighhighs",
         })
 
-        return posts.json()
+        return {
+            "host": self.api_host,
+            "posts": posts.json(),
+        }
 
     def generate_text(self):
-        posts = self.model.json_state
+        state = self.model.json_state
+        posts = state['posts']
 
         recent_posts = [
             recent.content
@@ -31,7 +35,7 @@ class Supplier(TextGeneratorBot):
             tags = [f"#{tag}" for tag in post['tags'].split(" ")]
             content = "{} {}/post/show/{}".format(
                             " ".join(tags),
-                            self.api_host,
+                            state['host'],
                             post['id']
                         )
 
