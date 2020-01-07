@@ -1,10 +1,18 @@
 from botfriend.bot import TextGeneratorBot
+from botfriend.model import _now
 import requests
 
 
 class Supplier(TextGeneratorBot):
 
-    api_host = "https://yande.re"
+    @property
+    def api_host(self):
+        case = [
+        "https://yande.re",
+        "https://konachan.net",
+        ]
+
+        return case[_now().toordinal() % len(case)]
 
     def update_state(self):
         posts = requests.get("{}/post.json".format(self.api_host), params={
