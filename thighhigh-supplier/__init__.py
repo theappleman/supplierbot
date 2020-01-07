@@ -31,16 +31,20 @@ class Supplier(TextGeneratorBot):
             ApiHost("yande.re"),
             ApiHost("konachan.net"),
             ApiHost("hypnohub.net"),
-            ApiHost("danbooru.donmai.us", api_path="/posts.json", tags="tag_string", preview="file_url"),
+            ApiHost("danbooru.donmai.us",
+                    api_path="/posts.json",
+                    tags="tag_string",
+                    preview="file_url"),
         ]
 
         return case[_now().toordinal() % len(case)]
 
     def update_state(self):
-        posts = requests.get(self.api_host.url(self.api_host.api_path),
-                    params={
+        posts = requests.get(
+                self.api_host.url(self.api_host.api_path),
+                params={
                     "tags": "thighhighs",
-                    })
+                })
 
         return {
             "host": self.api_host.domain,
@@ -59,7 +63,11 @@ class Supplier(TextGeneratorBot):
             for recent in self.model.recent_posts(365)
         ]
         # alnum + underscore
-        tr = {x: None for x in list(range(ord('A'), ord('Z'))) + list(range(ord('a'), ord('z'))) + list(range(ord('0'), ord('9'))) + [ord('_')]}
+        tr = {x: None for x in
+                list(range(ord('A'), ord('Z'))) +
+                list(range(ord('a'), ord('z'))) +
+                list(range(ord('0'), ord('9'))) +
+                [ord('_')]}
 
         chosen = None
         for post in posts:
@@ -68,7 +76,8 @@ class Supplier(TextGeneratorBot):
             if post['rating'] != 's':
                 continue
 
-            tags = [f"#{tag}" for tag in post[state['tags']].split(" ") if tag.translate(tr) == '']
+            tags = [f"#{tag}" for tag in post[state['tags']].split(" ")
+                    if tag.translate(tr) == '']
             content = state['post'].format(
                             " ".join(tags),
                             post['id']
