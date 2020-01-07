@@ -1,0 +1,4 @@
+*.jpg
+botfriend.sqlite
+__pycache__/
+*.yaml
