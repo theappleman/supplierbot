@@ -101,7 +101,6 @@ class Supplier(TextGeneratorBot):
             }
 
             selected = {
-                "key": post['md5'],
                 "content": content,
                 "attachments": [attachment],
             }
