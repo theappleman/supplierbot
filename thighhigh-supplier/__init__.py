@@ -75,6 +75,9 @@ class Supplier(TextGeneratorBot):
                 break
             if post['rating'] != 's':
                 continue
+            # 10MiB file limit
+            if post['file_size'] > (10*1024*1024):
+                continue
 
             tags = [f"#{tag}" for tag in post[state['tags']].split(" ")
                     if tag.translate(tr) == '']
