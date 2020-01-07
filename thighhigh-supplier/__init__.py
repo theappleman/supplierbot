@@ -3,25 +3,48 @@ from botfriend.model import _now
 import requests
 
 
+class ApiHost(object):
+    def url(self, request_uri):
+        return "{}://{}{}".format(self.scheme, self.domain, request_uri)
+
+    def __init__(self, domain,
+                 scheme=None,
+                 post_path=None,
+                 api_path=None,
+                 tags=None,
+                 preview=None,
+                 ):
+        self.scheme = scheme or "https"
+        self.domain = domain
+        self.post_path = post_path or "/post/show/"
+        self.api_path = api_path or "/post.json"
+        self.tags = tags or "tags"
+        self.preview = preview or "sample_url"
+
+
 class Supplier(TextGeneratorBot):
 
     @property
     def api_host(self):
         case = [
-        "https://yande.re",
-        "https://konachan.net",
-        "https://hypnohub.net",
+            ApiHost("yande.re"),
+            ApiHost("konachan.net"),
+            ApiHost("hypnohub.net"),
         ]
 
         return case[_now().toordinal() % len(case)]
 
     def update_state(self):
-        posts = requests.get("{}/post.json".format(self.api_host), params={
-            "tags": "thighhighs",
-        })
+        posts = requests.get(self.api_host.url(self.api_host.api_path),
+                    params={
+                    "tags": "thighhighs",
+                    })
 
         return {
-            "host": self.api_host,
+            "host": self.api_host.domain,
+            "post": "{} " + self.api_host.url(self.api_host.post_path) + "{}",
+            "tags": self.api_host.tags,
+            "sample": self.api_host.preview,
             "posts": posts.json(),
         }
 
@@ -41,17 +64,16 @@ class Supplier(TextGeneratorBot):
             if post['rating'] != 's':
                 continue
 
-            tags = [f"#{tag}" for tag in post['tags'].split(" ")]
-            content = "{} {}/post/show/{}".format(
+            tags = [f"#{tag}" for tag in post[state['tags']].split(" ")]
+            content = state['post'].format(
                             " ".join(tags),
-                            state['host'],
                             post['id']
                         )
 
             if content in recent_posts:
                 continue
 
-            sample = requests.get(post['sample_url'], stream=True)
+            sample = requests.get(post[state['sample']], stream=True)
 
             with open("{}.jpg".format(post['md5']), "wb") as f:
                 for chunk in sample:
