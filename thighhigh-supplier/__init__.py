@@ -10,6 +10,7 @@ class Supplier(TextGeneratorBot):
         case = [
         "https://yande.re",
         "https://konachan.net",
+        "https://hypnohub.net",
         ]
 
         return case[_now().toordinal() % len(case)]
