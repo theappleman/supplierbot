@@ -89,7 +89,11 @@ class Supplier(TextGeneratorBot):
             if content in recent_posts:
                 continue
 
-            sample = requests.get(post[state['sample']], stream=True)
+            url = post[state['sample']]
+            if not url.startswith("http"):
+                url = f"https:{url}"
+
+            sample = requests.get(url, stream=True)
 
             with open("{}.jpg".format(post['md5']), "wb") as f:
                 for chunk in sample:
